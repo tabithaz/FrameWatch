@@ -1,0 +1,17 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run regression tests
+        run: make test
+      - name: Build with undefined behavior sanitizer
+        run: make clean && make CFLAGS='-std=c11 -O1 -g -Wall -Wextra -Wpedantic -Werror -fsanitize=undefined -fno-omit-frame-pointer'
+      - name: Run sanitizer tests
+        run: make test
